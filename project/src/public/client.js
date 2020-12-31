@@ -21,12 +21,14 @@ const App = (state) => {
     let { rovers } = state
     let { photos } = state
     let { selectedRover } = state
-
+console.log(selectedRover, 'selectedrover')
     let markup = `
         <header></header>
                
                 ${Rovers(rovers)}
-                ${selectedRover ? Rover(selectedRover) : ''}
+                <div id="selected-rover">
+                    ${selectedRover ? Rover(selectedRover) : ''}
+                </div>
        
         <footer></footer>
     `
@@ -42,13 +44,58 @@ window.addEventListener('load', () => {
 // ------------------------------------------------------  COMPONENTS
 
 const RoverButton = (rover) => {
-    return `<button type="button" id="button-${rover}" onclick="loadSelectedRover(${rover})">View Photos</button>`
+    return `<button type="button" id="button-${rover}" onclick="loadSelectedRover('${rover}')">View Photos</button>`
 }
 
 function loadSelectedRover (rover) {
-    //let { selectedRover } = state
-    //selectedRover => updateStore(store, { rover })
-    render(root, store)
+    updateStore(store, { selectedRover: rover })
+    //render(root, store)
+}
+
+const Rover = (selectedRover) => {
+
+    let { photos } = store
+
+    if ((selectedRover && !photos) || photos[0] !== selectedRover) {
+        getRover(store)
+    }
+
+
+    let carouselIndicators = photos[1].map((photo, index) => {
+        return `<li data-target="#carouselIndicators" data-slide-to="${index}" ${index === 0 ? 'class="active"' : ''}></li>`
+    }).join('')
+
+    let markup = `
+        <div id="carouselIndicators" class="carousel slide" data-ride="carousel" data-interval="false">
+          <ol class="carousel-indicators">
+        
+            ${carouselIndicators}
+          </ol>
+          <div class="carousel-inner">
+          `
+
+    markup += photos[1].map((photo, index) => {
+        return `
+            <div class="carousel-item ${index === 0 ? 'active' : ''}">
+              <img class="d-block w-100" src="${photo.img_src}" alt="First slide">
+            </div>
+    `
+    }).join('')
+
+    markup += `
+        </div>
+          <a class="carousel-control-prev" href="#carouselIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next" href="#carouselIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+    `
+
+    return markup
 }
 
 const Rovers = (rovers) => {
@@ -82,52 +129,7 @@ const Rovers = (rovers) => {
     return markup
 }
 
-const Rover = (selectedRover) => {
 
-    if (!selectedRover) {
-        getRover(store)
-    }
-
-    //let { photos } = state
-
-    //console.log(photos[1])
-
-    let carouselIndicators = photos[1].map((photo, index) => {
-      return `<li data-target="#carouselExampleIndicators" data-slide-to="${index}" ${index === 0 ? 'class="active"' : ''}></li>`
-    }).join('')
-
-    let markup = `
-        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="false">
-          <ol class="carousel-indicators">
-        
-            ${carouselIndicators}
-          </ol>
-          <div class="carousel-inner">
-          `
-
-    markup += photos[1].map((photo, index) => {
-        return `
-            <div class="carousel-item ${index === 0 ? 'active' : ''}">
-              <img class="d-block w-100" src="${photo.img_src}" alt="First slide">
-            </div>
-    `
-    }).join('')
-
-    markup += `
-        </div>
-          <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-          </a>
-          <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-          </a>
-        </div>
-    `
-
-    return markup
-}
 
 
 // ------------------------------------------------------  API CALLS
@@ -146,10 +148,11 @@ const getRovers = (state) => {
 
 const getRover = (state) => {
     let { selectedRover } = state
+    let { photos } = state
 
     fetch(`http://localhost:3000/rovers/${selectedRover}`)
         .then(res => res.json())
-        .then(photos => updateStore(store, {photos}))
+        .then(photos => updateStore(store, { photos }))
 
     return photos
 

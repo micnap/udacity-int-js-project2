@@ -25,8 +25,9 @@ app.get('/rovers', async (req, res) => {
 
 app.get('/rovers/:rover', async (req, res) => {
     let rover = req.params.rover
+    console.log(rover, 'THE ROVER')
     try {
-        let photos = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/spirit/photos?sol=1000&api_key=${process.env.API_KEY}`)
+        let photos = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?sol=1000&api_key=${process.env.API_KEY}`)
             .then(res => res.json())
         res.send([rover, photos.photos] )
     } catch (err) {

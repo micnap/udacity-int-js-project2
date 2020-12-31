@@ -54,3 +54,7 @@ footer {
 .rovers a, .rovers a:hover {
   text-decoration: none;
 }
+
+.carousel {
+  max-width: 800px;
+}
