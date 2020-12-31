@@ -1,8 +1,6 @@
 /* -------------------  MOBILE  --------------------- */
 
 body {
-  display: flex;
-  flex-direction: column;
   font-family: Arial;
   min-height: 100vh;
 }
@@ -12,7 +10,6 @@ header {
 }
 
 main {
-  flex: 1;
   padding: 20px;
 }
 
@@ -35,4 +32,25 @@ footer {
 
 @media (min-width: 1824px) {
   /* use mobile */
+}
+
+.rover {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.rover img {
+  width: 400px;
+}
+
+.rover div {
+  padding: 1em;
+  width: 30%;
+  border: 2px solid red;
+  min-width: 300px;
+}
+
+.rover a {
+  text-decoration: none;
 }
