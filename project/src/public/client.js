@@ -88,6 +88,10 @@ const Rover = (selectedRover) => {
         getRover(store)
     }
 
+    if (selectedRover && !photos) {
+        return `<h3>No photos available</h3>`
+    }
+
     let carouselIndicators = photos.get(1).map((photo, index) => {
         return `<li data-target="#carouselIndicators" data-slide-to="${index}" ${index === 0 ? 'class="active"' : ''}></li>`
     }).join('')
