@@ -18,6 +18,12 @@ footer {
   /* footer styles */
 }
 
+h1, h3 {
+  color: white;
+  text-transform: capitalize;
+  text-align: center;
+}
+
 .rovers {
   display: flex;
   flex-wrap: wrap;
@@ -90,4 +96,10 @@ button {
 @media (min-width: 1824px) {
   /* use mobile */
 }
-
+.carousel-control-next-icon, .carousel-control-prev-icon {
+  border: #cb9256 10px solid;
+  background-color: #cb9256;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}

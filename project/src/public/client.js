@@ -25,7 +25,7 @@ const App = (state) => {
 
     let markup = `
         <header></header>
-               
+                <h1>Mars Rovers</h1>
                 ${Rovers(rovers)}
                 <div id="selected-rover">
                     ${selectedRover ? Rover(selectedRover) : ''}
@@ -65,9 +65,9 @@ console.log(photos, 'photos')
     }).join('')
 
     let markup = `
+        <h3>${photos.get(0)} Rover Images</h3>
         <div id="carouselIndicators" class="carousel slide" data-ride="carousel" data-interval="false">
           <ol class="carousel-indicators">
-        
             ${carouselIndicators}
           </ol>
           <div class="carousel-inner">
@@ -100,7 +100,6 @@ console.log(photos, 'photos')
 const Rovers = (rovers) => {
     if (rovers.length == 0) {
        let rovers = getRovers(store)
-        console.log(rovers, 'ggrgrgrgrg')
     }
 
     let markup = `<div class="rovers">`
@@ -165,23 +164,15 @@ const getRover = (state) => {
 
     fetch(`http://localhost:3000/rovers/${selectedRover}`)
         .then(res => res.json())
-        //.then(photos => updateStore(store, { photos }))
         .then(photos => {
-
             let photos_objects = photos[1].map(photo => {
                 return Immutable.Map({
                     img_src: photo.img_src
                 })
             })
-
-            let immutable_photo_objects = Immutable.List([selectedRover, photos_objects])
-            updateStore(store, { photos: immutable_photo_objects })
+            updateStore(store, { photos: Immutable.List([selectedRover, photos_objects]) })
         })
-
-    return photos
-
 }
-
 
 const getTimeOnMars = (landDate) => {
     return Math.round((new Date - Date.parse(landDate)) / 86400000)
