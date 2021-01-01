@@ -4,7 +4,7 @@ let store = {
     selectedRover: '',
 }
 
-// add our markup to the page
+// Add our markup to the page
 const root = document.getElementById('root')
 
 const updateStore = (store, newState) => {
@@ -16,7 +16,7 @@ const render = async (root, state) => {
     root.innerHTML = App(state)
 }
 
-// create content
+// Starting point
 const App = (state) => {
 
     let { rovers } = state
@@ -41,25 +41,53 @@ window.addEventListener('load', () => {
     render(root, store)
 })
 
-
 // ------------------------------------------------------  COMPONENTS
 
-const RoverButton = (rover) => {
-    return `<button type="button" class="button-${rover}" onclick="loadSelectedRover('${rover}')">View Photos</button>`
+// Displays the data for the Spirit, Curiosity, and Opportunity rovers.
+const Rovers = (rovers) => {
+    if (rovers.length == 0) {
+        let rovers = getRovers(store)
+    }
+
+    let markup = `<div class="rovers">`
+    markup += rovers.map(rover => {
+        let name = rover.get('name')
+        return `
+            <div>
+                <img src="assets/images/${name.toLowerCase()}.jpg" alt="${name} rover" />
+                <h2>${name} Rover</h2>
+                <!-- Rover images from: 
+                - Curiosity: https://mars.nasa.gov/msl/home/
+                - Spirit: https://solarsystem.nasa.gov/missions/spirit/in-depth/
+                - Opportunity: https://en.wikipedia.org/wiki/Opportunity_(rover)
+                -->
+                <p>${getTimeOnMars(rover.get('landing_date'))} days on Mars</p>
+                <p><span class="label">Status:</span> ${rover.get('status')}</p>
+                <p><span class="label">Launch date:</span> ${rover.get('launch_date')}</p>
+                <p><span class="label">Land date:</span> ${rover.get('landing_date')}</p>
+                
+                <p>${rover.get('total_photos').toLocaleString()} photos with the most recent from ${rover.get('max_date')}</p>
+                ${RoverButton(name.toLowerCase())}
+            </div>
+    `
+    }).join('')
+    markup += `</div>`
+
+    return markup
 }
 
-function loadSelectedRover (rover) {
-    updateStore(store, { selectedRover: rover })
-}
-
+// Displays the images for the selected rover in a bootstrap slideshow.
 const Rover = (selectedRover) => {
 
+    // Photos is in the form of:
+    // photos[0] is the name of the rover.
+    // photos[1] contains the images for the rover.
     let { photos } = store
 
     if ((selectedRover && !photos) || photos.get(0) !== selectedRover) {
         getRover(store)
     }
-console.log(photos, 'photos')
+
     let carouselIndicators = photos.get(1).map((photo, index) => {
         return `<li data-target="#carouselIndicators" data-slide-to="${index}" ${index === 0 ? 'class="active"' : ''}></li>`
     }).join('')
@@ -97,45 +125,19 @@ console.log(photos, 'photos')
     return markup
 }
 
-const Rovers = (rovers) => {
-    if (rovers.length == 0) {
-       let rovers = getRovers(store)
-    }
-
-    let markup = `<div class="rovers">`
-    markup += rovers.map(rover => {
-        let name = rover.get('name')
-        return `
-            <div>
-                <img src="assets/images/${name.toLowerCase()}.jpg" alt="${name} rover" />
-                <h2>${name} Rover</h2>
-                <!-- Rover images from: 
-                - Curiosity: https://mars.nasa.gov/msl/home/
-                - Spirit: https://solarsystem.nasa.gov/missions/spirit/in-depth/
-                - Opportunity: https://en.wikipedia.org/wiki/Opportunity_(rover)
-                -->
-                <p>${getTimeOnMars(rover.get('landing_date'))} days on Mars</p>
-                <p><span class="label">Status:</span> ${rover.get('status')}</p>
-                <p><span class="label">Launch date:</span> ${rover.get('launch_date')}</p>
-                <p><span class="label">Land date:</span> ${rover.get('landing_date')}</p>
-                
-                <p>${rover.get('total_photos').toLocaleString()} photos with the most recent from ${rover.get('max_date')}</p>
-                ${RoverButton(name.toLowerCase())}
-            </div>
-    `
-    }).join('')
-    markup += `</div>`
-
-    return markup
+// Button for choosing the rover.
+const RoverButton = (rover) => {
+    return `<button type="button" class="button-${rover}" onclick="loadSelectedRover('${rover}')">View Photos</button>`
 }
 
-
+function loadSelectedRover (rover) {
+    updateStore(store, { selectedRover: rover })
+}
 
 
 // ------------------------------------------------------  API CALLS
 
-// Example API call
-
+// Gets info for all 3 rovers.
 const getRovers = (state) => {
     let { rovers } = state
 
@@ -158,6 +160,7 @@ const getRovers = (state) => {
         })
 }
 
+// Gets images for selected rover.
 const getRover = (state) => {
     let { selectedRover } = state
     let { photos } = state
@@ -174,6 +177,7 @@ const getRover = (state) => {
         })
 }
 
+// Utility function for calculating how lon the rover is/was on Mars.
 const getTimeOnMars = (landDate) => {
     return Math.round((new Date - Date.parse(landDate)) / 86400000)
 }

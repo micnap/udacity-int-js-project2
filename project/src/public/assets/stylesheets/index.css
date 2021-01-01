@@ -96,6 +96,7 @@ button {
 @media (min-width: 1824px) {
   /* use mobile */
 }
+
 .carousel-control-next-icon, .carousel-control-prev-icon {
   border: #cb9256 10px solid;
   background-color: #cb9256;
