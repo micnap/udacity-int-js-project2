@@ -44,7 +44,7 @@ window.addEventListener('load', () => {
 // ------------------------------------------------------  COMPONENTS
 
 const RoverButton = (rover) => {
-    return `<button type="button" id="button-${rover}" onclick="loadSelectedRover('${rover}')">View Photos</button>`
+    return `<button type="button" class="button-${rover}" onclick="loadSelectedRover('${rover}')">View Photos</button>`
 }
 
 function loadSelectedRover (rover) {
@@ -116,9 +116,10 @@ const Rovers = (rovers) => {
                 - Opportunity: https://en.wikipedia.org/wiki/Opportunity_(rover)
                 -->
                 <p>${getTimeOnMars(rover.landing_date)} days on Mars</p>
-                <p>${rover.launch_date}</p>
-                <p>${rover.landing_date}</p>
-                <p>${rover.status}</p>
+                <p><span class="label">Status:</span> ${rover.status}</p>
+                <p><span class="label">Launch date:</span> ${rover.launch_date}</p>
+                <p><span class="label">Land date:</span> ${rover.landing_date}</p>
+                
                 <p>${rover.total_photos.toLocaleString()} photos with the most recent from ${rover.max_date}</p>
                 ${RoverButton(name.toLowerCase())}
             </div>

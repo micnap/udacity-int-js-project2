@@ -17,38 +17,24 @@ footer {
   /* footer styles */
 }
 
-/* -------------------  TABLET  --------------------- */
-@media (min-width: 768px) {
-  /* use mobile */
-}
-
-/* -------------------  DESKTOP  -------------------- */
-
-@media (min-width: 1224px) {
-  /* use mobile */
-}
-
-/* -------------------  LARGE SCREENS  -------------- */
-
-@media (min-width: 1824px) {
-  /* use mobile */
-}
-
 .rovers {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .rovers img {
-  width: 400px;
+  width: 100%;
+  margin-bottom: 1em;
 }
 
 .rovers div {
   padding: 1em;
   width: 30%;
-  border: 2px solid red;
+  background-color: #e8e0d6;
   min-width: 300px;
+  margin-bottom: 2em;
+  border-radius:1em;
 }
 
 .rovers a, .rovers a:hover {
@@ -57,4 +43,45 @@ footer {
 
 .carousel {
   max-width: 800px;
+  margin: auto;
 }
+
+.label {
+  font-weight: bold;
+}
+
+button[class^='button-'] {
+  width: 100%;
+  padding: 1em;
+  font-size: 20px;
+}
+
+/* -------------------  PHONE  --------------------- */
+@media (max-width: 768px) {
+  .rovers div {
+    width: 90%;
+  }
+}
+
+/* -------------------  TABLET  --------------------- */
+@media (min-width: 768px) {
+  .rovers div {
+    width: 45%;
+  }
+}
+
+/* -------------------  DESKTOP  -------------------- */
+
+@media (min-width: 1224px) {
+  /* use mobile */
+  .rovers div {
+    width: 30%;
+  }
+}
+
+/* -------------------  LARGE SCREENS  -------------- */
+
+@media (min-width: 1824px) {
+  /* use mobile */
+}
+
