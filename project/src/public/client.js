@@ -144,17 +144,17 @@ const getRovers = (state) => {
     fetch(`http://localhost:3000/rovers`)
         .then(res => res.json())
         .then(rovers => {
-                let rovers_objects = rovers.map(rover => {
-                    return Immutable.Map({
-                        landing_date: rover.landing_date,
-                        launch_date: rover.launch_date,
-                        name: rover.name,
-                        status: rover.status,
-                        total_photos: rover.total_photos,
-                        max_date: rover.max_date
-                    })
+            let rovers_objects = rovers.map(rover => {
+                return Immutable.Map({
+                    landing_date: rover.landing_date,
+                    launch_date: rover.launch_date,
+                    name: rover.name,
+                    status: rover.status,
+                    total_photos: rover.total_photos,
+                    max_date: rover.max_date
                 })
-            //}
+            })
+
             let rovers_list = Immutable.List(rovers_objects)
             updateStore(store, { rovers: rovers_list })
         })
