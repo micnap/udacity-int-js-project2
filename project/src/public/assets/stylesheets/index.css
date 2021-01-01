@@ -3,6 +3,7 @@
 body {
   font-family: Arial;
   min-height: 100vh;
+  background: #503317;
 }
 
 header {
@@ -46,14 +47,19 @@ footer {
   margin: auto;
 }
 
+.carousel img {
+  border-radius: 2em;
+}
+
 .label {
   font-weight: bold;
 }
 
-button[class^='button-'] {
+button {
   width: 100%;
   padding: 1em;
   font-size: 20px;
+  font-weight: bold;
 }
 
 /* -------------------  PHONE  --------------------- */

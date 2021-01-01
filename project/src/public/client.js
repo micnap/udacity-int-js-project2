@@ -1,5 +1,5 @@
 let store = {
-    rovers: '',
+    rovers: [],
     photos: '',
     selectedRover: '',
 }
@@ -18,10 +18,11 @@ const render = async (root, state) => {
 
 // create content
 const App = (state) => {
+
     let { rovers } = state
     let { photos } = state
     let { selectedRover } = state
-console.log(selectedRover, 'selectedrover')
+
     let markup = `
         <header></header>
                
@@ -49,19 +50,17 @@ const RoverButton = (rover) => {
 
 function loadSelectedRover (rover) {
     updateStore(store, { selectedRover: rover })
-    //render(root, store)
 }
 
 const Rover = (selectedRover) => {
 
     let { photos } = store
 
-    if ((selectedRover && !photos) || photos[0] !== selectedRover) {
+    if ((selectedRover && !photos) || photos.get(0) !== selectedRover) {
         getRover(store)
     }
-
-
-    let carouselIndicators = photos[1].map((photo, index) => {
+console.log(photos, 'photos')
+    let carouselIndicators = photos.get(1).map((photo, index) => {
         return `<li data-target="#carouselIndicators" data-slide-to="${index}" ${index === 0 ? 'class="active"' : ''}></li>`
     }).join('')
 
@@ -74,10 +73,10 @@ const Rover = (selectedRover) => {
           <div class="carousel-inner">
           `
 
-    markup += photos[1].map((photo, index) => {
+    markup += photos.get(1).map((photo, index) => {
         return `
             <div class="carousel-item ${index === 0 ? 'active' : ''}">
-              <img class="d-block w-100" src="${photo.img_src}" alt="First slide">
+              <img class="d-block w-100" src="${photo.get('img_src')}" alt="First slide">
             </div>
     `
     }).join('')
@@ -99,13 +98,14 @@ const Rover = (selectedRover) => {
 }
 
 const Rovers = (rovers) => {
-    if (!rovers) {
-        getRovers(store)
+    if (rovers.length == 0) {
+       let rovers = getRovers(store)
+        console.log(rovers, 'ggrgrgrgrg')
     }
 
     let markup = `<div class="rovers">`
     markup += rovers.map(rover => {
-        let name = rover.name
+        let name = rover.get('name')
         return `
             <div>
                 <img src="assets/images/${name.toLowerCase()}.jpg" alt="${name} rover" />
@@ -115,12 +115,12 @@ const Rovers = (rovers) => {
                 - Spirit: https://solarsystem.nasa.gov/missions/spirit/in-depth/
                 - Opportunity: https://en.wikipedia.org/wiki/Opportunity_(rover)
                 -->
-                <p>${getTimeOnMars(rover.landing_date)} days on Mars</p>
-                <p><span class="label">Status:</span> ${rover.status}</p>
-                <p><span class="label">Launch date:</span> ${rover.launch_date}</p>
-                <p><span class="label">Land date:</span> ${rover.landing_date}</p>
+                <p>${getTimeOnMars(rover.get('landing_date'))} days on Mars</p>
+                <p><span class="label">Status:</span> ${rover.get('status')}</p>
+                <p><span class="label">Launch date:</span> ${rover.get('launch_date')}</p>
+                <p><span class="label">Land date:</span> ${rover.get('landing_date')}</p>
                 
-                <p>${rover.total_photos.toLocaleString()} photos with the most recent from ${rover.max_date}</p>
+                <p>${rover.get('total_photos').toLocaleString()} photos with the most recent from ${rover.get('max_date')}</p>
                 ${RoverButton(name.toLowerCase())}
             </div>
     `
@@ -142,9 +142,21 @@ const getRovers = (state) => {
 
     fetch(`http://localhost:3000/rovers`)
         .then(res => res.json())
-        .then(rovers => updateStore(store, { rovers }))
-
-    return rovers.rovers
+        .then(rovers => {
+                let rovers_objects = rovers.map(rover => {
+                    return Immutable.Map({
+                        landing_date: rover.landing_date,
+                        launch_date: rover.launch_date,
+                        name: rover.name,
+                        status: rover.status,
+                        total_photos: rover.total_photos,
+                        max_date: rover.max_date
+                    })
+                })
+            //}
+            let rovers_list = Immutable.List(rovers_objects)
+            updateStore(store, { rovers: rovers_list })
+        })
 }
 
 const getRover = (state) => {
@@ -153,7 +165,18 @@ const getRover = (state) => {
 
     fetch(`http://localhost:3000/rovers/${selectedRover}`)
         .then(res => res.json())
-        .then(photos => updateStore(store, { photos }))
+        //.then(photos => updateStore(store, { photos }))
+        .then(photos => {
+
+            let photos_objects = photos[1].map(photo => {
+                return Immutable.Map({
+                    img_src: photo.img_src
+                })
+            })
+
+            let immutable_photo_objects = Immutable.List([selectedRover, photos_objects])
+            updateStore(store, { photos: immutable_photo_objects })
+        })
 
     return photos
 
