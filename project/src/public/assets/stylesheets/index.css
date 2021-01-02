@@ -61,6 +61,11 @@ h1, h3 {
   font-weight: bold;
 }
 
+.attribute {
+  color: white;
+  text-align: center;
+}
+
 button {
   width: 100%;
   padding: 1em;

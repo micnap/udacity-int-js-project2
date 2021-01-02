@@ -26,9 +26,9 @@ const App = (state) => {
     let markup = `
         <header></header>
                 <h1>Mars Rovers</h1>
-                ${Rovers(rovers)}
+                ${appendNasaAttribute(Rovers)(rovers)}
                 <div id="selected-rover">
-                    ${selectedRover ? Rover(selectedRover) : ''}
+                    ${selectedRover ? appendNasaAttribute(Rover)(selectedRover) : ''}
                 </div>
        
         <footer></footer>
@@ -67,7 +67,7 @@ const Rovers = (rovers) => {
                 <p><span class="label">Land date:</span> ${rover.get('landing_date')}</p>
                 
                 <p>${rover.get('total_photos').toLocaleString()} photos with the most recent from ${rover.get('max_date')}</p>
-                ${RoverButton(name.toLowerCase())}
+                ${withLog(RoverButton)(name.toLowerCase())}
             </div>
     `
     }).join('')
@@ -132,6 +132,21 @@ const Rover = (selectedRover) => {
 // Button for choosing the rover.
 const RoverButton = (rover) => {
     return `<button type="button" class="button-${rover}" onclick="loadSelectedRover('${rover}')">View Photos</button>`
+}
+
+// Contrived HOF for logging the addition of UI components.
+const withLog = (fn) => {
+    return (...args) => {
+        console.log(`Adding button for ${args[0]}`)
+        return fn(...args)
+    }
+}
+
+// Contrived HOF for appending attribution to components.
+const appendNasaAttribute = (fn) => {
+    return (...args) => {
+        return fn(...args) + '<p class="attribute">Brought to you by NASA APIs.</p>'
+    }
 }
 
 function loadSelectedRover (rover) {
