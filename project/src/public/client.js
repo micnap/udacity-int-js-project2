@@ -20,7 +20,6 @@ const render = async (root, state) => {
 const App = (state) => {
 
     let { rovers } = state
-    let { photos } = state
     let { selectedRover } = state
 
     let markup = `
@@ -46,7 +45,7 @@ window.addEventListener('load', () => {
 // Displays the data for the Spirit, Curiosity, and Opportunity rovers.
 const Rovers = (rovers) => {
     if (rovers.length == 0) {
-        let rovers = getRovers(store)
+        rovers = getRovers(store)
     }
 
     let markup = `<div class="rovers">`
